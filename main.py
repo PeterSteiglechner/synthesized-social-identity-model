@@ -137,6 +137,9 @@ for useSIA, useIT, useIPT in scenarios:
     fig.suptitle(condTitle, x=0.5, ha="center")
     for ax, l in zip(axs, string.ascii_uppercase):
         ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
+        ax.set_xticks(range(0,3001,1000))
+        ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
+    axs[1].set_xlabel("Time")
     fig.tight_layout()
     fig.savefig(f"figs/baseline{cond}.png", dpi=600)
 
@@ -168,11 +171,13 @@ for useSIA, useIT, useIPT in scenarios:
         # ax.set_xscale("log")
 
     axs[0].legend(handles=[Line2D([], [], color=c, lw=2, label=g) for g, c in cmap.items()])
-    fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center")
+    fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.96)
     for ax, l in zip(axs, string.ascii_uppercase):
         ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
-
-    fig.tight_layout()
+        ax.set_xticks(range(0,3001,1000))
+        ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
+    axs[1].set_xlabel("Time")
+    fig.tight_layout(h_pad=0)
     fig.savefig(f"figs/baseline{cond}_exampleSeed{s}.png", dpi=600)
 # %%
 
