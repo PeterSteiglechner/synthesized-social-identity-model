@@ -8,6 +8,8 @@ Agent-based model of opinion dynamics that combines three mechanisms related to 
 
 Agents are split into a majority group A (90) and a minority group B (10). Each step, every agent observes a random other agent. Non-threatening opinions are assimilated and self-esteem recharges. Threatening ones trigger defensive opinion change and drain self-esteem. When self-esteem is depleted, identity content adjusts and self-esteem changes. 
 
+![Alt Text](figs/baseline_exampleSeed42.png "Typical simulation run.")
+
 ## Scenarios
 
 `main.py` runs 100 seeds for four conditions:
