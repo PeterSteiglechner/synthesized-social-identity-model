@@ -1,7 +1,7 @@
 [project]
 name = "synthesized-social-identity"
 version = "0.1.0"
-description = "Add your description here"
+description = "Agent-based model of opinion dynamics combining social identity mechanisms"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -9,5 +9,4 @@ dependencies = [
     "matplotlib>=3.11.2",
     "numpy>=2.5.4",
     "pandas>=3.0.6",
-    "seaborn>=0.13.2",
 ]

@@ -4,9 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 plt.rcParams.update({"font.size":9})
 import string
-
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import os
+os.makedirs("data", exist_ok=True)
+os.makedirs("figs", exist_ok=True)
 
 #%%
 # params
@@ -44,7 +45,7 @@ scenarios = [
 for useSIA, useIT, useIPT in scenarios:
     res = []
     for seed in seeds: 
-        np.random.default_rng(seed)
+        np.random.seed(seed)
         groups = np.array(["A"] * nA + ["B"] * nB)
         opinions =  np.concatenate([np.random.uniform(0,opA_hi, nA), np.random.uniform(opB_lo,1,nB)])
         identityS =  np.concatenate([[opinions[groups=="A"].mean()] * nA, [opinions[groups=="B"].mean()] * nB]) if useSIA else opinions.copy()
