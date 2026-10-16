@@ -113,16 +113,16 @@ for useSIA, useIT, useIPT in scenarios:
     # -----   Ensemble Mean
     # ---------------------
     fig, axs = plt.subplots(1, 3, sharex=True, figsize=(16/2.54, 7/2.54))
-    # filter once, then collapse to one row per (seed, group, t)
+
     d = df[(df.t % resolution == 0)]
     d = d.groupby(["seed", "group", "t"], as_index=False)[cols].mean().sort_values("t")
 
-    # individual seeds: faint
+    # individual runs
     for (s, g), sub in d.groupby(["seed", "group"]):
         for ax, col in zip(axs, cols):
             ax.plot(sub["t"], sub[col], color=cmap[g], alpha=0.1, lw=1)
 
-    # mean across seeds: solid, drawn on top
+    # ensemble mean run
     m = d.groupby(["group", "t"], as_index=False)[cols].mean()
     for g, sub in m.groupby("group"):
         for ax, col in zip(axs, cols):
@@ -147,38 +147,38 @@ for useSIA, useIT, useIPT in scenarios:
     # -----   Individual Run
     # ---------------------
 
-    s = 48
+    for s in [42,48]:
 
-    fig, axs = plt.subplots(1, 3, sharex=True, figsize=(16/2.54, 7/2.54))
+        fig, axs = plt.subplots(1, 3, sharex=True, figsize=(16/2.54, 7/2.54))
 
-    d = df[(df.seed==s) & (df.t % resolution == 0)]
-    d = d.groupby(["id", "group", "t"], as_index=False)[cols].mean().sort_values("t")
+        d = df[(df.seed==s) & (df.t % resolution == 0)]
+        d = d.groupby(["id", "group", "t"], as_index=False)[cols].mean().sort_values("t")
 
-    # individuals
-    for (i,g), sub in d.groupby(["id", "group"]):
-        for ax, col in zip(axs, cols):
-            ax.plot(sub["t"], sub[col], color=cmap[g], alpha=0.2, lw=1)
+        # individuals
+        for (i,g), sub in d.groupby(["id", "group"]):
+            for ax, col in zip(axs, cols):
+                ax.plot(sub["t"], sub[col], color=cmap[g], alpha=0.2, lw=1)
 
-    # mean : solid, drawn on top
-    m = d.groupby(["group", "t"], as_index=False)[cols].mean()
-    for g, sub in m.groupby("group"):
-        for ax, col in zip(axs, cols):
-            ax.plot(sub["t"], sub[col], color=cmap[g], lw=2, zorder=3, ls="--")
+        # mean 
+        m = d.groupby(["group", "t"], as_index=False)[cols].mean()
+        for g, sub in m.groupby("group"):
+            for ax, col in zip(axs, cols):
+                ax.plot(sub["t"], sub[col], color=cmap[g], lw=2, zorder=3, ls="--")
 
-    for ax, lab in zip(axs, labels):
-        ax.set_ylabel(lab)
-        ax.set_ylim(0, 1)
-        # ax.set_xscale("log")
+        for ax, lab in zip(axs, labels):
+            ax.set_ylabel(lab)
+            ax.set_ylim(0, 1)
+            # ax.set_xscale("log")
 
-    axs[0].legend(handles=[Line2D([], [], color=c, lw=2, label=g) for g, c in cmap.items()])
-    fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.94)
-    for ax, l in zip(axs, string.ascii_uppercase):
-        ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
-        ax.set_xticks(range(0,3001,1000))
-        ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
-    axs[1].set_xlabel("Time")
-    fig.tight_layout(h_pad=0)
-    fig.savefig(f"figs/baseline{cond}_exampleSeed{s}.png", dpi=600)
+        axs[0].legend(handles=[Line2D([], [], color=c, lw=2, label=g) for g, c in cmap.items()])
+        fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.94)
+        for ax, l in zip(axs, string.ascii_uppercase):
+            ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
+            ax.set_xticks(range(0,3001,1000))
+            ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
+        axs[1].set_xlabel("Time")
+        fig.tight_layout(h_pad=0)
+        fig.savefig(f"figs/baseline{cond}_exampleSeed{s}.png", dpi=600)
 # %%
 
 
