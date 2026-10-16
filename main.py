@@ -134,7 +134,7 @@ for useSIA, useIT, useIPT in scenarios:
         # ax.set_xscale("log")
 
     axs[0].legend(handles=[Line2D([], [], color=c, lw=2, label=g) for g, c in cmap.items()])
-    fig.suptitle(condTitle, x=0.5, ha="center")
+    fig.suptitle(condTitle, x=0.5, ha="center", y=0.94)
     for ax, l in zip(axs, string.ascii_uppercase):
         ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
         ax.set_xticks(range(0,3001,1000))
@@ -171,7 +171,7 @@ for useSIA, useIT, useIPT in scenarios:
         # ax.set_xscale("log")
 
     axs[0].legend(handles=[Line2D([], [], color=c, lw=2, label=g) for g, c in cmap.items()])
-    fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.96)
+    fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.94)
     for ax, l in zip(axs, string.ascii_uppercase):
         ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
         ax.set_xticks(range(0,3001,1000))
