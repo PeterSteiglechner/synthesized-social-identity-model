@@ -26,16 +26,19 @@ delta_charge = 0.05
 delta_drain = 0.05
 delta_charge_identity = 0.5
 beta = 0.01
-
+temperature = 0.1
+prob = f"_probModel-T{temperature}"
 T = 3000
 
 #%%
 def snap(seed, t, groups, opinions, identityS, selfEsteem, threat):
     return pd.DataFrame({"seed":seed, "t":t, "id":range(n), "group":groups, "op":opinions, "identity_standard":identityS, "self_esteem":selfEsteem, "threat":threat})
 
+def p_threat(error, selfesteem):
+    return 1/(1 + np.exp( - 1/temperature * (error - selfesteem * crit_difference_max)))
 
 #%%
-seeds = np.arange(100)
+seeds = list(np.arange(40,50))
 scenarios = [
     (True, True, True),
     (False, True, True),
@@ -56,9 +59,9 @@ for useSIA, useIT, useIPT in scenarios:
         for t in range(1,T+1):
             # agentIds.shuffle()
             observed_ops = opinions[np.random.permutation(n)]          # or choice, excluding self
-            threatening = (abs(observed_ops - identityS) > (crit_difference_max * selfesteem))
+            # threatening = (abs(observed_ops - identityS) > (crit_difference_max * selfesteem))
             # ALTERNATIVE: threat = False if self-esteem high and diff=0,  
-            # threatening = np.random.random(n) <= (1-selfesteem) * abs(observed_ops - identityS)
+            threatening = np.random.random(n) <= p_threat(abs(observed_ops - identityS), selfesteem)
             nonthreatening = ~threatening
             
             # fast loop
@@ -88,9 +91,9 @@ for useSIA, useIT, useIPT in scenarios:
     # ---------------------
     condTitle = "Baseline Simualtion (all theories)" if (useSIA*useIPT*useIT)==1 else ("Baseline without SIA" if not useSIA else ("Baseline without IPT" if not useIPT else ("Baseline without ICT" if not useIT else ("?"))))
     cond = "" if (useSIA*useIPT*useIT)==1 else ("_noSIA" if not useSIA else ("_noIPT" if not useIPT else ("_noIT" if not useIT else ("?"))))
-    print("finished: ",condTitle, "; stored as ",f"data/baseline{cond}.csv")
+    print("finished: ",condTitle, "; stored as ",f"data/baseline{prob}{cond}.csv")
     df = pd.concat(res)
-    df.to_csv(f"data/baseline{cond}.csv")
+    df.to_csv(f"data/baseline{prob}{cond}.csv")
 
 
 # %%
@@ -102,7 +105,7 @@ for useSIA, useIT, useIPT in scenarios:
     cond = "" if (useSIA*useIPT*useIT)==1 else ("_noSIA" if not useSIA else ("_noIPT" if not useIPT else ("_noIT" if not useIT else ("?"))))
     condTitle = "Baseline Simualtion (all theories)" if (useSIA*useIPT*useIT)==1 else ("Baseline without SIA" if not useSIA else ("Baseline without IPT" if not useIPT else ("Baseline without ICT" if not useIT else ("?"))))
 
-    df = pd.read_csv(f"data/baseline{cond}.csv")
+    df = pd.read_csv(f"data/baseline{prob}{cond}.csv")
 
     cmap = {"A": "tomato", "B": "cornflowerblue"}
     cols = ["op", "identity_standard", "self_esteem"]
@@ -137,12 +140,14 @@ for useSIA, useIT, useIPT in scenarios:
     fig.suptitle(condTitle, x=0.5, ha="center", y=0.94)
     for ax, l in zip(axs, string.ascii_uppercase):
         ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
-        ax.set_xticks(range(0,3001,1000))
-        ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
+        ax.set_xticks(range(0,T+1,1000))
+        ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,T+1,1000)])
     axs[1].set_xlabel("Time")
     fig.tight_layout()
-    fig.savefig(f"figs/baseline{cond}.png", dpi=600)
-
+    fname = f"figs/baseline{prob}{cond}.png"
+    print(f"saved : {fname}")
+    fig.savefig(fname, dpi=600)
+    plt.close()
     # ---------------------
     # -----   Individual Run
     # ---------------------
@@ -174,11 +179,14 @@ for useSIA, useIT, useIPT in scenarios:
         fig.suptitle(f"Example Simulation: {condTitle}", x=0.5, ha="center", y=0.94)
         for ax, l in zip(axs, string.ascii_uppercase):
             ax.text(0.025,0.975,l, transform=ax.transAxes, fontsize=12, fontdict={"weight":"bold"}, va="top", ha="left")
-            ax.set_xticks(range(0,3001,1000))
-            ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,3001,1000)])
+            ax.set_xticks(range(0,T+1,1000))
+            ax.set_xticklabels([f"{int(i/1000)}k" for i in range(0,T+1,1000)])
         axs[1].set_xlabel("Time")
         fig.tight_layout(h_pad=0)
-        fig.savefig(f"figs/baseline{cond}_exampleSeed{s}.png", dpi=600)
+        fname = f"figs/baseline{prob}{cond}_exampleSeed{s}.png"
+        print(f"saved : {fname}")
+        fig.savefig(fname, dpi=600)
+        plt.close()
 # %%
 
 
