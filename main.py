@@ -38,7 +38,7 @@ def p_threat(error, selfesteem):
     return 1/(1 + np.exp( - 1/temperature * (error - selfesteem * crit_difference_max)))
 
 #%%
-seeds = list(np.arange(0,1000))
+seeds = list(np.arange(0,100))
 scenarios = [
     (True, True, True),
     (False, True, True),
@@ -124,6 +124,8 @@ for useSIA, useIT, useIPT in scenarios:
     for (s, g), sub in d.groupby(["seed", "group"]):
         for ax, col in zip(axs, cols):
             ax.plot(sub["t"], sub[col], color=cmap[g], alpha=0.1, lw=1)
+        if s==100:
+            break
 
     # ensemble mean run
     m = d.groupby(["group", "t"], as_index=False)[cols].mean()
