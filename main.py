@@ -38,7 +38,7 @@ def p_threat(error, selfesteem):
     return 1/(1 + np.exp( - 1/temperature * (error - selfesteem * crit_difference_max)))
 
 #%%
-seeds = list(np.arange(40,50))
+seeds = list(np.arange(0,1000))
 scenarios = [
     (True, True, True),
     (False, True, True),
@@ -49,9 +49,9 @@ for useSIA, useIT, useIPT in scenarios:
     res = []
     for seed in seeds: 
         np.random.seed(seed)
-        groups = np.array(["A"] * nA + ["B"] * nB)
+        groups = np.array(["majority group"] * nA + ["minority group"] * nB)
         opinions =  np.concatenate([np.random.uniform(0,opA_hi, nA), np.random.uniform(opB_lo,1,nB)])
-        identityS =  np.concatenate([[opinions[groups=="A"].mean()] * nA, [opinions[groups=="B"].mean()] * nB]) if useSIA else opinions.copy()
+        identityS =  np.concatenate([[opinions[groups=="majority group"].mean()] * nA, [opinions[groups=="minority group"].mean()] * nB]) if useSIA else opinions.copy()
         selfesteem = np.random.uniform(e_init_min, e_init_max, size=n)
             
         res.append(snap(seed, 0, groups, opinions, identityS, selfesteem, np.nan))
@@ -107,7 +107,7 @@ for useSIA, useIT, useIPT in scenarios:
 
     df = pd.read_csv(f"data/baseline{prob}{cond}.csv")
 
-    cmap = {"A": "tomato", "B": "cornflowerblue"}
+    cmap = {"majority group": "tomato", "minority group": "cornflowerblue"}
     cols = ["op", "identity_standard", "self_esteem"]
     labels = ["Opinion", "Social Identity Content", "Self Esteem"]
     resolution = 1
